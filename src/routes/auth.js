@@ -17,7 +17,7 @@ router.post('/', [check('username', 'User name is required field').exists(),
     const { username, email, password } = req.body
 
     try {
-        const connection = pool.connect();
+// Removed the unused connection variable to prevent connection leaks.
 
         // check if user already exist
         const userExist = await pool.query(`SELECT * FROM users WHERE email=$1 OR username = $2`, [email, username]);
