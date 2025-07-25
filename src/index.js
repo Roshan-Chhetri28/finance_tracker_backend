@@ -1,11 +1,13 @@
 import e from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
-import router from "./routes/auth.js";
 import http from 'http';
 import pool from "./config/database.js";
-// import pool from './config/database.js';
-pool
+// router
+import router from "./routes/auth.js";
+import userRouter from './routes/user.js'
+import transactionRouter from './routes/transaction.js'
+
 // Load environment variables
 dotenv.config();
 
@@ -29,7 +31,8 @@ pool.query('SELECT NOW()', (err, res) => {
 const server = http.createServer(app)
 
 app.use('/api/auth', router)
-
+app.use('/api', userRouter)
+app.use('/api', transactionRouter)
 
 server.listen(PORT, ()=>{
     console.info(`Server Started at port ${PORT}`)
