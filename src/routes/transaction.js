@@ -13,14 +13,14 @@ router.post('/transaction', [
     check('category', 'Category is required').notEmpty(),
     check('amount', 'Amount must be a positive number').isFloat({ gt: 0 }),
     check('description', 'Description is optional').optional()
-], auth, async (req, res) => {
+], async (req, res) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const user_id = req.user.id;
+    const user_id = 1;
     const { type, category, amount, description } = req.body;
 
     try {
@@ -45,13 +45,13 @@ router.post('/transaction', [
     }
 });
 // Get all transactions by user (with optional type filter)
-router.get('/transactions', auth, async (req, res) => {
-    const user_id = req.user.id;
+router.get('/transactions', async (req, res) => {
+    const user_id = 1;
     const { type } = req.query; // Optional query parameter to filter by type
 
     try {
         let query = `SELECT * FROM transactions WHERE user_id = $1`;
-        let params = [user_id];
+        let params = 1;
         
         // Add type filter if provided
         if (type && ['income', 'expense'].includes(type)) {
@@ -61,7 +61,7 @@ router.get('/transactions', auth, async (req, res) => {
         
         query += ` ORDER BY transaction_date DESC, created_at DESC`;
 
-        const result = await pool.query(query, params);
+        const result = await pool.query(query, [params]);
 
         res.json({
             message: "Transactions retrieved successfully",
