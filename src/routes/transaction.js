@@ -20,7 +20,19 @@ router.post('/', [
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const user_id = 1;
+    // Get the first user from the database instead of hardcoding
+    let user_id;
+    try {
+        const userQuery = await pool.query('SELECT id FROM users LIMIT 1');
+        if (userQuery.rows.length === 0) {
+            return res.status(500).json({ message: "No users found in the database" });
+        }
+        user_id = userQuery.rows[0].id;
+    } catch (userErr) {
+        console.error("Error fetching user:", userErr);
+        return res.status(500).json({ message: "Error fetching user" });
+    }
+    
     const { type, category, amount, description } = req.body;
 
     try {
@@ -46,7 +58,18 @@ router.post('/', [
 });
 // Get all transactions by user (grouped by type)
 router.get('/', async (req, res) => {
-    const user_id = 1;
+    // Get the first user from the database instead of hardcoding
+    let user_id;
+    try {
+        const userQuery = await pool.query('SELECT id FROM users LIMIT 1');
+        if (userQuery.rows.length === 0) {
+            return res.status(500).json({ message: "No users found in the database" });
+        }
+        user_id = userQuery.rows[0].id;
+    } catch (userErr) {
+        console.error("Error fetching user:", userErr);
+        return res.status(500).json({ message: "Error fetching user" });
+    }
 
     try {
         // Query all transactions for the user
@@ -74,7 +97,18 @@ router.get('/', async (req, res) => {
 
 // Get transaction by id
 router.get('/:id', async (req, res) => {
-    const user_id = 1;
+    // Get the first user from the database instead of hardcoding
+    let user_id;
+    try {
+        const userQuery = await pool.query('SELECT id FROM users LIMIT 1');
+        if (userQuery.rows.length === 0) {
+            return res.status(500).json({ message: "No users found in the database" });
+        }
+        user_id = userQuery.rows[0].id;
+    } catch (userErr) {
+        console.error("Error fetching user:", userErr);
+        return res.status(500).json({ message: "Error fetching user" });
+    }
     const transaction_id = req.params.id;
 
     try {
@@ -111,7 +145,18 @@ router.put('/:id', [
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const user_id = 1;
+    // Get the first user from the database instead of hardcoding
+    let user_id;
+    try {
+        const userQuery = await pool.query('SELECT id FROM users LIMIT 1');
+        if (userQuery.rows.length === 0) {
+            return res.status(500).json({ message: "No users found in the database" });
+        }
+        user_id = userQuery.rows[0].id;
+    } catch (userErr) {
+        console.error("Error fetching user:", userErr);
+        return res.status(500).json({ message: "Error fetching user" });
+    }
     const transaction_id = req.params.id;
     const { type, category, amount, description } = req.body;
 
@@ -142,7 +187,18 @@ router.put('/:id', [
 
 // Delete transaction
 router.delete('/:id', async (req, res) => {
-    const user_id = 1;
+    // Get the first user from the database instead of hardcoding
+    let user_id;
+    try {
+        const userQuery = await pool.query('SELECT id FROM users LIMIT 1');
+        if (userQuery.rows.length === 0) {
+            return res.status(500).json({ message: "No users found in the database" });
+        }
+        user_id = userQuery.rows[0].id;
+    } catch (userErr) {
+        console.error("Error fetching user:", userErr);
+        return res.status(500).json({ message: "Error fetching user" });
+    }
     const transaction_id = req.params.id;
 
     try {
