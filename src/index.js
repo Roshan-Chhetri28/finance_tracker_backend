@@ -17,7 +17,11 @@ const PORT = process.env.PORT || 8080
 
 app.use(e.json());
 app.use(e.urlencoded({ extended: true })); 
-app.use(cors())
+app.use(cors({
+  origin: ['https://finance-tracker-j83b.onrender.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  credentials: true
+}));
 
 // Test database connection
 pool.query('SELECT NOW()', (err, res) => {
@@ -31,8 +35,8 @@ pool.query('SELECT NOW()', (err, res) => {
 const server = http.createServer(app)
 
 app.use('/api/auth', router)
-app.use('/api', userRouter)
-app.use('/api', transactionRouter)
+app.use('/api/user', userRouter)
+app.use('/api/transactions', transactionRouter)
 
 server.listen(PORT, ()=>{
     console.info(`Server Started at port ${PORT}`)
