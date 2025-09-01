@@ -44,30 +44,26 @@ router.post('/transaction', [
         return res.status(500).json({ message: "Error creating transaction" });
     }
 });
-// Get all transactions by user (with optional type filter)
+// Get all transactions by user (grouped by type)
 router.get('/transactions', async (req, res) => {
     const user_id = 1;
-    const { type } = req.query; // Optional query parameter to filter by type
-
+    
     try {
-        let query = `SELECT * FROM transactions WHERE user_id = $1`;
-        let params = 1;
+        // Query all transactions for the user
+        const query = `SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC, created_at DESC`;
         
-        // Add type filter if provided
-        if (type && ['income', 'expense'].includes(type)) {
-            query += ` AND type = $2`;
-            params.push(type);
-        }
+        const result = await pool.query(query, [user_id]);
         
-        query += ` ORDER BY transaction_date DESC, created_at DESC`;
-
-        const result = await pool.query(query, [params]);
-
+        // Group transactions by type
+        const grouped = {
+            income: result.rows.filter(transaction => transaction.type === 'income'),
+            expenses: result.rows.filter(transaction => transaction.type === 'expense')
+        };
+        
         res.json({
             message: "Transactions retrieved successfully",
-            transactions: result.rows,
-            total: result.rows.length,
-            type: type || 'all'
+            transactions: grouped,
+            total: result.rows.length
         });
 
     } catch (error) {
@@ -77,8 +73,8 @@ router.get('/transactions', async (req, res) => {
 });
 
 // Get transaction by id
-router.get('/transaction/:id', auth, async (req, res) => {
-    const user_id = req.user.id;
+router.get('/transaction/:id', async (req, res) => {
+    const user_id = 1;
     const transaction_id = req.params.id;
 
     try {
@@ -108,14 +104,14 @@ router.put('/transaction/:id', [
     check('category', 'Category is required').optional().notEmpty(),
     check('amount', 'Amount must be a positive number').optional().isFloat({ gt: 0 }),
     check('description', 'Description is optional').optional()
-], auth, async (req, res) => {
+], async (req, res) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const user_id = req.user.id;
+    const user_id = 1;
     const transaction_id = req.params.id;
     const { type, category, amount, description } = req.body;
 
@@ -145,8 +141,8 @@ router.put('/transaction/:id', [
 });
 
 // Delete transaction
-router.delete('/transaction/:id', auth, async (req, res) => {
-    const user_id = req.user.id;
+router.delete('/transaction/:id', async (req, res) => {
+    const user_id = 1;
     const transaction_id = req.params.id;
 
     try {
