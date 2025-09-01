@@ -1,0 +1,74 @@
+import pool from "../config/database.js";
+
+// Function to initialize the database
+const initializeDatabase = async () => {
+    try {
+        // Create users table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(255) UNIQUE NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        
+        // Create transactions table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS transactions (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                type VARCHAR(20) CHECK (type IN ('income', 'expense')) NOT NULL,
+                category VARCHAR(100) NOT NULL,
+                amount DECIMAL(12, 2) NOT NULL CHECK (amount > 0),
+                description TEXT,
+                transaction_date DATE DEFAULT CURRENT_DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        
+        // Create categories table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS categories (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                type VARCHAR(20) CHECK (type IN ('income', 'expense')) NOT NULL,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        
+        // Create indexes
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions(user_id);`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(transaction_date);`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(type);`);
+        
+        // Insert default categories if they don't exist
+        await pool.query(`
+            INSERT INTO categories (name, type, user_id) 
+            VALUES 
+                ('Salary', 'income', NULL),
+                ('Freelance', 'income', NULL),
+                ('Investment', 'income', NULL),
+                ('Other Income', 'income', NULL),
+                ('Food & Dining', 'expense', NULL),
+                ('Transportation', 'expense', NULL),
+                ('Shopping', 'expense', NULL),
+                ('Entertainment', 'expense', NULL),
+                ('Bills & Utilities', 'expense', NULL),
+                ('Healthcare', 'expense', NULL),
+                ('Education', 'expense', NULL),
+                ('Other Expense', 'expense', NULL)
+            ON CONFLICT DO NOTHING;
+        `);
+        
+        console.log('Database schema initialized successfully');
+    } catch (error) {
+        console.error('Error initializing database schema:', error);
+    }
+};
+
+export default initializeDatabase;

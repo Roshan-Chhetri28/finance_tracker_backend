@@ -7,8 +7,8 @@ import auth from "../middleware/auth.js";
 const router = Router()
 
 router.post('/', [check('username', 'User name is required field').exists(),
-    check('email', 'email is required field').isEmail(),
-    check('password', 'password is a required field').exists()
+check('email', 'email is required field').isEmail(),
+check('password', 'password is a required field').exists()
 ], async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -17,7 +17,7 @@ router.post('/', [check('username', 'User name is required field').exists(),
     const { username, email, password } = req.body
 
     try {
-// Removed the unused connection variable to prevent connection leaks.
+        // Removed the unused connection variable to prevent connection leaks.
 
         // check if user already exist
         const userExist = await pool.query(`SELECT * FROM users WHERE email=$1 OR username = $2`, [email, username]);

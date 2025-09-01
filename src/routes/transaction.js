@@ -47,19 +47,19 @@ router.post('/', [
 // Get all transactions by user (grouped by type)
 router.get('/', async (req, res) => {
     const user_id = 1;
-    
+
     try {
         // Query all transactions for the user
         const query = `SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC, created_at DESC`;
-        
+
         const result = await pool.query(query, [user_id]);
-        
+
         // Group transactions by type
         const grouped = {
             income: result.rows.filter(transaction => transaction.type === 'income'),
             expenses: result.rows.filter(transaction => transaction.type === 'expense')
         };
-        
+
         res.json({
             message: "Transactions retrieved successfully",
             transactions: grouped,
