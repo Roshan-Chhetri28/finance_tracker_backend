@@ -35,8 +35,8 @@ pool.query('SELECT NOW()', (err, res) => {
 const server = http.createServer(app)
 
 app.use('/api/auth', router)
-app.use('/api/user', userRouter)
-app.use('/api/transactions', transactionRouter)
+app.use('/api', userRouter)
+app.use('/api', transactionRouter)
 
 server.listen(PORT, ()=>{
     console.info(`Server Started at port ${PORT}`)
