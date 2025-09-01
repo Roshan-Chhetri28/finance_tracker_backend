@@ -7,7 +7,7 @@ const router = Router()
 
 
 // Create transaction (income or expense)
-router.post('/transaction', [
+router.post('/', [
     // Validation middleware
     check('type', 'Type is required and must be either income or expense').isIn(['income', 'expense']),
     check('category', 'Category is required').notEmpty(),
@@ -45,7 +45,7 @@ router.post('/transaction', [
     }
 });
 // Get all transactions by user (grouped by type)
-router.get('/transactions', async (req, res) => {
+router.get('/', async (req, res) => {
     const user_id = 1;
     
     try {
@@ -73,7 +73,7 @@ router.get('/transactions', async (req, res) => {
 });
 
 // Get transaction by id
-router.get('/transaction/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const user_id = 1;
     const transaction_id = req.params.id;
 
@@ -99,7 +99,7 @@ router.get('/transaction/:id', async (req, res) => {
 
 
 // Update transaction
-router.put('/transaction/:id', [
+router.put('/:id', [
     check('type', 'Type must be either income or expense').optional().isIn(['income', 'expense']),
     check('category', 'Category is required').optional().notEmpty(),
     check('amount', 'Amount must be a positive number').optional().isFloat({ gt: 0 }),
@@ -141,7 +141,7 @@ router.put('/transaction/:id', [
 });
 
 // Delete transaction
-router.delete('/transaction/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const user_id = 1;
     const transaction_id = req.params.id;
 
