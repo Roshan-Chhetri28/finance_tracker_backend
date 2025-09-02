@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8080
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ['https://finance-tracker-j83b.onrender.com', 'http://localhost:3000'],
+    origin: ['https://finance-tracker-j83b.onrender.com', 'http://localhost:3000', 'https://paisarupaya.dpdns.org'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true
 }));
