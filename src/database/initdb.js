@@ -46,6 +46,20 @@ const initializeDatabase = async () => {
         await pool.query(`CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(transaction_date);`);
         await pool.query(`CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(type);`);
         
+        // Create conversation history table for AI advisor
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS conversation_history (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                session_id VARCHAR(255) NOT NULL,
+                role VARCHAR(50) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+                message TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_conversation_user_session ON conversation_history(user_id, session_id);
+        `);
+        
         // Insert default categories if they don't exist
         await pool.query(`
             INSERT INTO categories (name, type, user_id) 

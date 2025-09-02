@@ -8,6 +8,7 @@ import initializeDatabase from "./database/initdb.js";
 import router from "./routes/auth.js";
 import userRouter from './routes/user.js'
 import transactionRouter from './routes/transaction.js'
+import advisorRouter from './routes/advisor.js'
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +20,7 @@ const PORT = process.env.PORT || 8080
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ['https://finance-tracker-j83b.onrender.com', 'http://localhost:3000', 'https://paisarupaya.dpdns.org'],
+    origin: ['https://finance-tracker-j83b.onrender.com', 'http://localhost:5173', 'https://paisarupaya.dpdns.org'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true
 }));
@@ -40,6 +41,7 @@ const server = http.createServer(app)
 app.use('/api/auth', router)
 app.use('/api/user', userRouter)
 app.use('/api/transactions', transactionRouter)
+app.use('/api/advisor', advisorRouter)
 
 server.listen(PORT, () => {
     console.info(`Server Started at port ${PORT}`)
