@@ -12,7 +12,7 @@
       "dest": "src/index.js",
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       "headers": {
-        "Access-Control-Allow-Origin": "https://finance-tracker-j83b.onrender.com",
+        "Access-Control-Allow-Origin": "https://paisarupaya.dpdns.org",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
         "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept, Authorization",
         "Access-Control-Allow-Credentials": "true"
